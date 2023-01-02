@@ -1,0 +1,17 @@
+[tool.poetry]
+name = "rcltranslation-examples"
+version = "0.1.0"
+description = "RCL Translation Examples"
+authors = ["Lumina-Research"]
+license = "MIT"
+readme = "README.md"
+packages = [{include = "rcltranslation_examples"}]
+
+[tool.poetry.dependencies]
+python = "^3.9"
+requests = "2.28.1"
+nltk = "3.7"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
