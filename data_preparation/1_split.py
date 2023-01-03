@@ -10,14 +10,14 @@ import math
 
 # SCRIPT SETUP
 # 1
-OUTPUT_FOLDER = "example_data/tatoeba/spanish/split"
+OUTPUT_FOLDER = "example_data/tatoeba/danish/split"
 
 # 2
 # DANISH
-# DATA_SET = "example_data/tatoeba/spanish/unmodified/Sentence pairs in Danish-English.tsv"
+DATA_SET = "example_data/tatoeba/danish/unmodified/Sentence pairs in Danish-English.tsv"
 
 # SPANISH
-DATA_SET = "example_data/tatoeba/spanish/unmodified/Sentence pairs in Spanish-English.tsv"
+# DATA_SET = "example_data/tatoeba/spanish/unmodified/Sentence pairs in Spanish-English.tsv"
 
 # 3
 TOTAL_FILE_COUNT = 2
