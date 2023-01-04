@@ -45,7 +45,7 @@ def split_large_file():
         
         print(f"lines remaining: {lines_remaining}")
 
-        if(current_line_count < lines_per_file and lines_remaining != 0):
+        if (current_line_count < lines_per_file and lines_remaining != 0):
             line_bucket.append(line)
         else:
             write_file(line_bucket, current_iteration, file)
