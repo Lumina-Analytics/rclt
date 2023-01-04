@@ -14,6 +14,11 @@ These scripts were written with Python 3.9.
 After installing python:
 curl -sSL https://install.python-poetry.org | python -
 
+### Add Poetry To Path
+$HOME/.local/bin on Unix.
+%APPDATA%\Python\Scripts on Windows.
+$POETRY_HOME/bin if $POETRY_HOME is set.
+
 ## Retrieve your API Token
 1. Navigate to https://support.lumina247.com
 2. Sign in or Signup by clicking the Profile menu

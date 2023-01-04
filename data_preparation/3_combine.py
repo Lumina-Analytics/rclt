@@ -9,16 +9,16 @@ import os
 
 # DANISH
 DATA_FOLDER = "example_data/tatoeba/danish/cleansed"
-OUTPUT_FILE_NAME = "DA_EN.txt"
+OUTPUT_FILE_NAME = "example_data/tatoeba/danish/combined/DA_EN.txt"
 
 # SPANISH
 # DATA_FOLDER = "example_data/tatoeba/spanish/cleansed"
-# OUTPUT_FILE_NAME = "ES_EN.txt"
+# OUTPUT_FILE_NAME = "example_data/tatoeba/spanish/combined/ES_EN.txt"
 
 def combine_files():
     training_files = os.listdir(DATA_FOLDER)
     
-    new_file = Path(f"{DATA_FOLDER}/").resolve().joinpath(OUTPUT_FILE_NAME)
+    new_file = Path(OUTPUT_FILE_NAME)
 
     for file in training_files:
         print(f"Combining {file}")               

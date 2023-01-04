@@ -26,18 +26,18 @@ FILE_UPLOAD_CHUNK_SIZE = 50000000
 
 # 4
 # DANISH
-# TRAINING_SESSION_NAME = "DANISH_TATOEBA_EXAMPLE"
+TRAINING_SESSION_NAME = "DANISH_TATOEBA_EXAMPLE"
 
 # SPANISH
-TRAINING_SESSION_NAME = "SPANISH_TATOEBA_EXAMPLE"
+# TRAINING_SESSION_NAME = "SPANISH_TATOEBA_EXAMPLE"
 
 # 5
 # LANGUAGE VARIABLES
 # DANISH
-# DATA_FOLDER = "example_data/tatoeba/danish/reversed"
+DATA_FOLDER = "example_data/tatoeba/danish/reversed"
 
 # SPANISH
-DATA_FOLDER = "example_data/tatoeba/spanish/reversed"
+# DATA_FOLDER = "example_data/tatoeba/spanish/reversed"
 
 HEADERS = {
     "Content-type": "application/json",
