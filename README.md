@@ -11,6 +11,7 @@ These scripts were written with Python 3.9.
 3. Install python tools for vscode: https://code.visualstudio.com/docs/languages/python
 
 ## Install Poetry
+Poetry is a package dependency management for python, this is included for easy installation of requirements and dependency auditing.
 After installing python:
 curl -sSL https://install.python-poetry.org | python -
 
@@ -18,6 +19,9 @@ curl -sSL https://install.python-poetry.org | python -
 $HOME/.local/bin on Unix.
 %APPDATA%\Python\Scripts on Windows.
 $POETRY_HOME/bin if $POETRY_HOME is set.
+
+### Install dependencies using poetry
+poetry install
 
 ## Retrieve your API Token
 1. Navigate to https://support.lumina247.com

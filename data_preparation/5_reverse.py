@@ -3,6 +3,8 @@ from pathlib import Path
 import os
 
 # SCRIPT INSTRUCTIONS
+# THIS SCRIPT ASSUMES THE FILES HAS ALREADY BEEN CLEANSED FOR TRAINING
+# THIS SCRIPT ASSUMES THE SOURCE DATA IS A TWO COLUMN FILE
 # THIS SCRIPT SIMPLY REVERSES A DATASET FOR BIDIRECTIONAL TRAINING, FOR INSTANCE YOUR SOURCE FILE IS CURRENTLY DANISH:ENGLISH, THIS SCRIPT WILL REVERSE THE ORDER TO ENGLISH:DANISH AND STORE IN THE CHOSEN DIRECTORY AS NEW FILES
 # 1 CHOOSE A LANGUAGE FROM THE OPTIONS BELOW COMMENT OUT THE VARIABLES FOR THE LANGUAGES YOU WILL NOT NEED AND UNCOMMENT THE VARIABLES FOR LANGUAGE YOU INTEND TO TRAIN
 # 2 SET THE DELIMITER FOR THE FILE TO BE PROCESSED 
@@ -32,6 +34,8 @@ def reverse_dataset(path: str) -> str:
     """Cleans a Tab seperated dataset for training purposes"""
     def reverse_line(line: str) -> str:
         parts = line.split(DELIMITER)
+        # if len(parts) > 2:
+            # throw an error to the user.
         if len(parts) > 1:
             p1 = parts[0].strip()
             p2 = parts[1].strip()

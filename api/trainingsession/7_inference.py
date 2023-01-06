@@ -27,7 +27,7 @@ SESSION_KEY = "PASTE SESSION KEY HERE"
 # 3
 # SET TEST DATA
 # Danish
-TEST_DATA_SOURCE = "example_data/tatoeba/danish/test_data/English_Danish_Test.txt"
+TEST_DATA_SOURCE = "example_data/tatoeba/italian/test_data/English_Italian_Test.txt"
 
 # Spanish
 # TEST_DATA_SOURCE = "example_data/tatoeba/spanish/test_data/English_Spanish_Test.txt"

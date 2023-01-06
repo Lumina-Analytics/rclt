@@ -65,12 +65,12 @@ LOG_OUTPUT_FILE = Path("example_data/tatoeba/danish/log/log.txt") # LOGS REASONS
 # 4
 # FROM LANGUAGE
 # DANISH
-# VALID_FROM_CHARS_PATTERN = re.compile(r'(?:^[a-zA-Z0-9.,;0\/!?ÆØÅæøå\-\' ]*$)', re.RegexFlag.S) # non matching pattern
-# VALID_FROM_START_CHARS_PATTERN = re.compile(r'(^[a-zA-Z0-9ÆØÅæøå])') # matching pattern
+VALID_FROM_CHARS_PATTERN = re.compile(r'(?:^[a-zA-Z0-9.,;0\/!?ÆØÅæøå\-\' ]*$)', re.RegexFlag.S) # non matching pattern
+VALID_FROM_START_CHARS_PATTERN = re.compile(r'(^[a-zA-Z0-9ÆØÅæøå])') # matching pattern
 
 # SPANISH
-VALID_FROM_CHARS_PATTERN = re.compile(r'(?:^[a-zA-Z0-9.,;0\/!?ÁÉÍÓÚÜÑáéíóúüñ¿¡\-\' ]*$)', re.RegexFlag.S) # non matching pattern, if any character hits, the sentence is invalid
-VALID_FROM_START_CHARS_PATTERN = re.compile(r'(^[a-zA-Z0-9!?ÁÉÍÓÚÜÑáéíóúüñ¿¡])') # if the sentence does not begin with one of these characters, the sentence is invalid and dropped from training
+# VALID_FROM_CHARS_PATTERN = re.compile(r'(?:^[a-zA-Z0-9.,;0\/!?ÁÉÍÓÚÜÑáéíóúüñ¿¡\-\' ]*$)', re.RegexFlag.S) # non matching pattern, if any character hits, the sentence is invalid
+# VALID_FROM_START_CHARS_PATTERN = re.compile(r'(^[a-zA-Z0-9!?ÁÉÍÓÚÜÑáéíóúüñ¿¡])') # if the sentence does not begin with one of these characters, the sentence is invalid and dropped from training
 
 # 5 
 # TO LANGUAGE
@@ -89,7 +89,7 @@ def cleanse_punctuation(input:str):
     # it is an imperfect routine that is handling unique but seldomly found occurrences in bitext dataset(s)
     repeating_punctuation = re.search(r"(\.|\?|\!)\1+", input) #handles repeating punctuation
     erroneous_punctuation = re.search(r"(\.\;\.\.\.\?\.\!|\;\.\;\;\;\?\;\!|\!\.\!\;\!\?\!\!|\?\.\?\;\?\?\?\!)", input) #handles grouped punctuation e.g. .; or ;? etc.
-    invalid_punctuation = re.search(r"([ ][:;,])", input) #handles punctuation with a preceding space, in this case we simply drop the line from the training set
+    invalid_punctuation = INVALID_TO_PUNCTUATION_PATTERN.search(input) #handles punctuation with a preceding space, in this case we simply drop the line from the training set
     punct = {".", "?", "!"}
 
     if repeating_punctuation:
@@ -103,28 +103,13 @@ def cleanse_punctuation(input:str):
         input = cleansed
     
     if invalid_punctuation:
-        input = ""
         LogLine(f"invalid_punctuation\t{input}\n")
+        input = ""        
 
     if len(input) > 0 and input[-1] not in punct:
-        input = ""
         LogLine(f"no_punctuation\t{input}\n")
+        input = ""        
 
-    return input
-
-def cleanse_multistop(input:str):
-    # this routine simply takes possible stop chars in a sentence and cleanses, adding back the original stop char at the end
-    # warning, in some languages, contextually, this may lead to run on sentences
-    if len(input) == 0:
-        return input
-
-    stop_char = input[-1]
-    input_clear = input[0: len(input) - 1: 1]
-    input = input_clear.replace(".", "")
-    input = input.replace("?", "")
-    input = input.replace('!', ' ')
-    input = input.replace(';', ' ')
-    input = input.strip() + stop_char
     return input
 
 def clean_general_characters(input):
@@ -155,8 +140,6 @@ def clean_input_to_language(input):
 
     input = cleanse_punctuation(input)
     
-    input = cleanse_multistop(input)
-    
     # if the sentence does not start with valid chars, eject it from training set
     if not re.match(VALID_TO_START_CHARS_PATTERN, input):
         LogLine(f"invalid_to_start_chars_pattern\t{input}\n")
@@ -175,8 +158,6 @@ def clean_input_from_language(input):
     input = clean_general_characters(input)
 
     input = cleanse_punctuation(input)
-    
-    input = cleanse_multistop(input)
     
     # if the sentence does not start with valid chars, eject it from training set  
     if not re.match(VALID_FROM_START_CHARS_PATTERN, input):
@@ -315,7 +296,7 @@ def clean_example_parallel():
     
     #parallel process files in batches of 20
     training_files = os.listdir(DATA_FOLDER)
-
+    
     with multiprocessing.Pool(30) as pool:
         pool.map(clean_dataset, training_files)
 

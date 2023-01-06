@@ -10,7 +10,7 @@ import math
 
 # SCRIPT SETUP
 # 1
-OUTPUT_FOLDER = "example_data/tatoeba/spanish/split"
+OUTPUT_FOLDER = "example_data/tatoeba/danish/split"
 
 # 2
 # DANISH

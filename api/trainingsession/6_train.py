@@ -259,8 +259,12 @@ def translation_training_example():
     if training_successful == False:
         print("Training did not complete successfully")
         return
+    
+    if training_successful == True:
+        print("Training completed successfully")
+        return
 
-    print("Training completed successfully")
+    print("Training ended")
 
 if __name__ == "__main__":
     translation_training_example()
