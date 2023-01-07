@@ -1,5 +1,6 @@
 # Environment Setup Instructions
 These scripts were written with Python 3.9.
+
 ## ANACONDA SPYDER USERS
 1. Install Anaconda: https://www.anaconda.com/
 2. Upgrade Conda Python Version: conda install -c anaconda python=3.9
