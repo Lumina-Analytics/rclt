@@ -27,15 +27,18 @@ def status_host():
         f"/status"
     )
 
-    response = requests.get(endpoint, data=json.dumps(SESSION_KEY), headers=HEADERS)
-    
-    if response.status_code != 200:
-        raise Exception(f"Error calling inference: {response.json()}")
-    else:
-        status_dict = response.json()
-        status = status_dict['actionState']
-        print(f"Inference host status: {status}")
-        return status
+    try:
+        response = requests.get(endpoint, data=json.dumps(SESSION_KEY), headers=HEADERS)
+        
+        if response.status_code != 200:
+            raise Exception(f"Error calling inference: {response.json()}")
+        else:
+            status_dict = response.json()
+            status = status_dict['actionState']
+            print(f"Inference host status: {status}")
+            return status
+    except:
+        raise Exception(f"A network error has occurred, unable to communicate with the api, check network connection and try again.")
 
 if __name__ == "__main__":
     while True:

@@ -18,12 +18,10 @@ from nltk.util import everygrams
 
 API_URL = "https://testrclapi.lumina247.io"
 
-# 1
-# example: bearer <token>
+# 1 example: bearer <token>
 API_TOKEN = "PASTE TOKEN HERE"
 
-# 2
-# SET YOUR TRAINING SESSION KEY HERE
+# 2 SET TRAINING SESSION KEY HERE
 SESSION_KEY = "PASTE SESSION KEY HERE"
 
 # 3
@@ -247,10 +245,10 @@ def parse_api_response(response: requests.Response) -> dict[str, Any]:
 
 def get_session_info(session_key: int) -> dict[str, Any]:
     """Gets info about an rcl session"""
-    r = requests.get(
-        f"{API_URL}/trainingsession/{session_key}", headers=HEADERS)
-    result = parse_api_response(r)
     try:
+        response = requests.get(
+        f"{API_URL}/trainingsession/{session_key}", headers=HEADERS)
+        result = parse_api_response(response)
         return result
     except:
         raise Exception(f"Session {session_key} does not exist!")
@@ -284,12 +282,15 @@ def inference(
         f"/{detail.value}"
     )
     
-    r = req_session.post(endpoint, data=json.dumps(input_text), headers=HEADERS)
+    try:
+        response = req_session.post(endpoint, data=json.dumps(input_text), headers=HEADERS)
 
-    if r.status_code == 200:
-        return r.json()
-    else:
-        raise Exception(f"Error calling inference: {r.json()}")
+        if response.status_code == 200:
+            return response.json()
+        else:
+            raise Exception(f"Error calling inference: {response.json()}")
+    except:
+        raise Exception(f"Error calling inference, check network connection and try again")
 
 def evaluate_translation_model(iter):
     start = time.monotonic()

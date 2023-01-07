@@ -16,18 +16,15 @@ from pathlib import Path
 
 API_URL = "https://testrclapi.lumina247.io"
 
-# 1
-# example: bearer <token>
+# 1 example: bearer <token>
 API_TOKEN = "PASTE TOKEN HERE"
 
-# 2
-# SET TRAINING SESSION KEY HERE
+# 2 SET TRAINING SESSION KEY HERE
 SESSION_KEY = "PASTE SESSION KEY HERE"
 
-# 3
-# SET TEST DATA
+# 3 SET TEST DATA
 # Danish
-TEST_DATA_SOURCE = "example_data/tatoeba/italian/test_data/English_Italian_Test.txt"
+TEST_DATA_SOURCE = "example_data/tatoeba/danish/test_data/English_Danish_Test.txt"
 
 # Spanish
 # TEST_DATA_SOURCE = "example_data/tatoeba/spanish/test_data/English_Spanish_Test.txt"
@@ -60,10 +57,10 @@ def parse_api_response(response: requests.Response) -> dict[str, Any]:
 
 def get_session_info(session_key: int) -> dict[str, Any]:
     """Gets info about an rcl session"""
-    r = requests.get(
-        f"{API_URL}/trainingsession/{session_key}", headers=HEADERS)
-    result = parse_api_response(r)
     try:
+        response = requests.get(
+        f"{API_URL}/trainingsession/{session_key}", headers=HEADERS)
+        result = parse_api_response(response)
         return result
     except:
         raise Exception(f"Session {session_key} does not exist!")
@@ -84,12 +81,16 @@ def inference_host_ready_check(
         f"/{detail.value}"
     )
     test_data = "health check"
-    r = requests.post(endpoint, data=json.dumps(test_data), headers=HEADERS)
-    
-    if "unrecognized model" in str(r.content):
-        return inference_host_ready_check(session_key, priority, detail)
 
-    return r
+    try:
+        response = requests.post(endpoint, data=json.dumps(test_data), headers=HEADERS)
+    
+        if "unrecognized model" in str(response.content):
+            return inference_host_ready_check(session_key, priority, detail)
+
+        return response
+    except:
+        raise Exception(f"inference host ready check failed, check network connection and try again.")
 
 def translate_inference_example(
     session_key: int,
@@ -104,30 +105,15 @@ def translate_inference_example(
         f"/inference/{priority.value}"
         f"/{detail.value}"
     )
-    r = requests.post(endpoint, data=json.dumps(input_text), headers=HEADERS)
-    if r.status_code == 200:
-        return r.json()
-    else:
-        raise Exception(f"Error calling inference: {r.json()}")
 
-def inference(
-    session_key: int,
-    input_text: str,
-    priority: InferencePriorityType = InferencePriorityType.accuracy,
-    detail: InferenceDetailType = InferenceDetailType.predict_next,
-) -> str:
-    """Makes an inference with the model"""
-    endpoint = (
-        f"{API_URL}"
-        f"/trainingsession/{session_key}"
-        f"/inference/{priority.value}"
-        f"/{detail.value}"
-    )
-    r = requests.post(endpoint, data=json.dumps(input_text), headers=HEADERS)
-    if r.status_code == 200:
-        return r.json()
-    else:
-        raise Exception(f"Error calling inference: {r.json()}")
+    try:
+        response = requests.post(endpoint, data=json.dumps(input_text), headers=HEADERS)
+        if response.status_code == 200:
+            return response.json()
+        else:
+            raise Exception(f"Error calling inference: {response.json()}")
+    except:
+        raise Exception(f"Error calling inference server: {response.json()}, check network connection and try again")
 
 def start_host():
     endpoint = (
@@ -135,19 +121,21 @@ def start_host():
         f"/inferencehost/{SESSION_KEY}"
         f"/start"        
     )
+    try:
+        response = requests.post(endpoint, data=json.dumps(SESSION_KEY), headers=HEADERS)
+        
+        if response.status_code != 200:
+            raise Exception(f"Error calling inference: {response.json()}")
+        else:
+            print('INFERENCE HOST STARTING')
+        
+        inference_ready_check = 0
 
-    r = requests.post(endpoint, data=json.dumps(SESSION_KEY), headers=HEADERS)
-    
-    if r.status_code != 200:
-        raise Exception(f"Error calling inference: {r.json()}")
-    else:
-        print('INFERENCE HOST STARTING')
-    
-    inference_ready_check = 0
-
-    while(inference_ready_check != 200):
-        inference_ready_check = inference_host_ready_check(SESSION_KEY, InferencePriorityType.index, InferenceDetailType.translate_line).status_code
-        time.sleep(10)
+        while(inference_ready_check != 200):
+            inference_ready_check = inference_host_ready_check(SESSION_KEY, InferencePriorityType.index, InferenceDetailType.translate_line).status_code
+            time.sleep(10)
+    except:
+        raise Exception("unable to start inference host, check network connection and try again")
 
 def test_inference(): 
     test_file = Path(TEST_DATA_SOURCE)

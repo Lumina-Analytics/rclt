@@ -12,10 +12,9 @@ import time
 # 4. NAME YOUR TRAINING SESSION
 # 5. CHOOSE A LANGUAGE FROM THE OPTIONS BELOW COMMENT OUT THE VARIABLES FOR THE LANGUAGES YOU WILL NOT NEED AND UNCOMMENT THE VARIABLES FOR LANGUAGE YOU INTEND TO TRAIN
 
-
 API_URL = "https://testrclapi.lumina247.io"
 
-# 1
+# 1 example: bearer <token>
 API_TOKEN = "PASTE TOKEN HERE"
 
 # 2
@@ -54,15 +53,19 @@ def parse_api_response(response: requests.Response) -> dict[str, Any]:
 def create_session(description: str) -> int:
     """Creates an RCL session and returns the id"""
     endpoint = f"{API_URL}/trainingsession"
-    r = requests.post(
-        endpoint, json={"description": str(description)}, headers=HEADERS)
-    return parse_api_response(r).get("trainingsessionkey", -1)
+    try:
+        response = requests.post(
+            endpoint, json={"description": str(description)}, headers=HEADERS)
+        return parse_api_response(response).get("trainingsessionkey", -1)
+    except:
+        raise Exception(f"Api Communication failure, unable to create session, check network connection and try again.")
+    
 
 def get_session_info(session_key: int) -> dict[str, Any]:
     """Gets info about an rcl session"""
-    r = requests.get(
+    response = requests.get(
         f"{API_URL}/trainingsession/{session_key}", headers=HEADERS)
-    result = parse_api_response(r)
+    result = parse_api_response(response)
     try:
         return result
     except:
@@ -74,9 +77,13 @@ def _multipart_upload_start(session_key: int, file_name: str) -> str:
     
     print(f"Initializing Multipart upload")
 
-    r = requests.post(endpoint, headers=HEADERS)
-    result = parse_api_response(r)
-    return result["documentid"]
+    try:
+        response = requests.post(endpoint, headers=HEADERS)
+        result = parse_api_response(response)
+        return result["documentid"]
+    except:
+        raise Exception(f"Api Communication failure, unable to start multipart upload, check network connection and try again.")
+    
 
 def _multipart_upload_chunk(
     session_key: int,
@@ -93,15 +100,18 @@ def _multipart_upload_chunk(
         f"/upload/multipart/{part_number}/{last_part}"
     )        
 
-    r = requests.put(
-        endpoint,
-        data=content,
-        headers={
-            "Content-Type": "application/octet-stream",
-            "Authorization": API_TOKEN,
-        },
-    )
-    return r.status_code == 200
+    try:
+        response = requests.put(
+            endpoint,
+            data=content,
+            headers={
+                "Content-Type": "application/octet-stream",
+                "Authorization": API_TOKEN,
+            },
+        )
+        return response.status_code == 200
+    except:
+        raise Exception(f"Api Communication failure, unable to upload chunk, check network connection and try again.")   
 
 def _multipart_upload_complete(session_key: int, document_id: str) -> bool:
     """Marks a multipart upload as complete"""
@@ -113,13 +123,16 @@ def _multipart_upload_complete(session_key: int, document_id: str) -> bool:
     
     print(f"Finalizing Multipart upload")
 
-    r = requests.post(
-        endpoint,
-        headers=HEADERS,
-        json={},
-    )
-    return r.status_code == 200
-
+    try:
+        response = requests.post(
+            endpoint,
+            headers=HEADERS,
+            json={},
+        )
+        return response.status_code == 200
+    except:
+        raise Exception(f"Api Communication failure, unable to complete multipart upload, check network connection and try again.")
+    
 def read_in_chunks(file_object, CHUNK_SIZE):
     
     print(f"Chunking upload, chunk_size: {CHUNK_SIZE}")
@@ -173,38 +186,65 @@ def upload_training_files(session_key: int, file: Path) -> bool:
     return True
 
 def check_training_failed(session_key: int):
-    r = requests.get(f"{API_URL}/trainingsession/{session_key}",
+    '''checks if training has failed'''
+    try:
+        response = requests.get(f"{API_URL}/trainingsession/{session_key}",
         headers=HEADERS)
     
-    stats = r.json()['trainingSession']['statuses']
+        stats = response.json()['trainingSession']['statuses']
     
-    training_failed = False
+        training_failed = False
     
-    for stat in stats:
-        if stat['statusType'] == "TrainingFailed":
-            training_failed = True
+        for stat in stats:
+            if stat['statusType'] == "TrainingFailed":
+                training_failed = True
 
-    if(training_failed):
-        print('Training did not succeed')
+        if(training_failed):
+            print('Training did not succeed')
 
-    return training_failed
+        return training_failed
+    except:
+        raise Exception(f"Api Communication failure, unable to check training failed status, check network connection and try again.")
 
 def check_training_succeeded(session_key: int):
-    r = requests.get(f"{API_URL}/trainingsession/{session_key}",
-        headers=HEADERS)
-    
-    stats = r.json()['trainingSession']['statuses']
-    
-    training_succeeded = False
-    
-    for stat in stats:
-        if stat['statusType'] == "TrainingCompleted":            
-            training_succeeded = True
+    '''checks if training has completed successfully'''
+    try:
+        response = requests.get(f"{API_URL}/trainingsession/{session_key}",
+            headers=HEADERS)
+        
+        stats = response.json()['trainingSession']['statuses']
+        
+        training_succeeded = False
+        
+        for stat in stats:
+            if stat['statusType'] == "TrainingCompleted":            
+                training_succeeded = True
 
-    if(training_succeeded):
-        print('Training succeeded')
+        if(training_succeeded):
+            print('Training succeeded')
 
-    return training_succeeded   
+        return training_succeeded   
+    except:
+        raise Exception(f"Api Communication failure, unable to check training succeeded status, check network connection and try again.")
+
+def check_training_status(session_key: int):
+    '''checks all statuses for a training session and returns the latest status'''
+    try:
+        response = requests.get(f"{API_URL}/trainingsession/{session_key}",
+            headers=HEADERS)
+        
+        stats = response.json()['trainingSession']['statuses']
+        
+        training_statuses = []
+        
+        for stat in stats:
+            training_statuses.append(stat['statusType'])
+        
+        last_training_status = training_statuses[-1]
+        
+        return last_training_status  
+    except:
+        raise Exception(f"Api Communication failure, unable to check training status, check network connection and try again.")
 
 def train_model(
     session_key: int,
@@ -214,27 +254,33 @@ def train_model(
     train_goal: float = 0.7
 ) -> bool:
     """Trains the RCL Model with the provided settings"""
-    r = requests.post(
-        f"{API_URL}/trainingsession/{session_key}/start",
-        json={ 
-            "vectorSize": vector_size,
-            "trainTranslationServices": translation_model,
-            "trainSensorServices": sensor_model,
-            "trainGoal": train_goal,
-        },
-        headers=HEADERS,
-    )
+    try:
+        response = requests.post(
+            f"{API_URL}/trainingsession/{session_key}/start",
+            json={ 
+                "vectorSize": vector_size,
+                "trainTranslationServices": translation_model,
+                "trainSensorServices": sensor_model,
+                "trainGoal": train_goal,
+            },
+            headers=HEADERS,
+        )
 
-    if r.status_code != 200:
-        raise Exception("Training Error!")
-    
-    training_succeeded = False
-    training_failed = False
+        if response.status_code != 200:
+            raise Exception(f"Training error occurred, response code is {response.status_code}")
+        
+        training_succeeded = False
+        training_failed = False
 
-    while(training_failed == False and training_succeeded == False):
-        training_failed = check_training_failed(session_key)
-        training_succeeded = check_training_succeeded(session_key)
-        time.sleep(60)
+        while(training_failed == False and training_succeeded == False):
+            training_failed = check_training_failed(session_key)
+            training_succeeded = check_training_succeeded(session_key)
+            training_status = check_training_status(session_key)
+            print("Training Session Status:", training_status)
+            time.sleep(60) 
+    except:
+        raise Exception(f"Api Communication failure, check network connection and try again.")
+
 
 def translation_training_example():
     """End to end example for translation and gleu scoring"""
