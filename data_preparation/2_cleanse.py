@@ -53,24 +53,24 @@ TO_LANGUAGE_INDEX = 3
 
 # 3
 # DANISH
-DATA_FOLDER = "example_data/tatoeba/danish/split" # SOURCE DATA (INPUT)
-OUTPUT_FOLDER = "example_data/tatoeba/danish/cleansed" # CLEANSED DATA FOLDER (OUTPUT)
-LOG_OUTPUT_FILE = Path("example_data/tatoeba/danish/log/log.txt") # LOGS REASONS DROP REASONS FOR TRAINING DATA
+# DATA_FOLDER = "example_data/tatoeba/danish/split" # SOURCE DATA (INPUT)
+# OUTPUT_FOLDER = "example_data/tatoeba/danish/cleansed" # CLEANSED DATA FOLDER (OUTPUT)
+# LOG_OUTPUT_FILE = Path("example_data/tatoeba/danish/log/log.txt") # LOGS REASONS DROP REASONS FOR TRAINING DATA
 
 # SPANISH
-# DATA_FOLDER = "example_data/tatoeba/spanish/split" # SOURCE DATA (INPUT)
-# OUTPUT_FOLDER = "example_data/tatoeba/spanish/cleansed" # CLEANSED DATA FOLDER (OUTPUT)
-# LOG_OUTPUT_FILE = Path("example_data/tatoeba/spanish/log/log.txt") # LOGS REASONS DROP REASONS FOR TRAINING DATA
+DATA_FOLDER = "example_data/tatoeba/spanish/split" # SOURCE DATA (INPUT)
+OUTPUT_FOLDER = "example_data/tatoeba/spanish/cleansed" # CLEANSED DATA FOLDER (OUTPUT)
+LOG_OUTPUT_FILE = Path("example_data/tatoeba/spanish/log/log.txt") # LOGS REASONS DROP REASONS FOR TRAINING DATA
 
 # 4
 # FROM LANGUAGE
 # DANISH
-VALID_FROM_CHARS_PATTERN = re.compile(r'(?:^[a-zA-Z0-9.,;0\/!?ÆØÅæøå\-\' ]*$)', re.RegexFlag.S) # non matching pattern
-VALID_FROM_START_CHARS_PATTERN = re.compile(r'(^[a-zA-Z0-9ÆØÅæøå])') # matching pattern
+# VALID_FROM_CHARS_PATTERN = re.compile(r'(?:^[a-zA-Z0-9.,;0\/!?ÆØÅæøå\-\' ]*$)', re.RegexFlag.S) # non matching pattern
+# VALID_FROM_START_CHARS_PATTERN = re.compile(r'(^[a-zA-Z0-9ÆØÅæøå])') # matching pattern
 
 # SPANISH
-# VALID_FROM_CHARS_PATTERN = re.compile(r'(?:^[a-zA-Z0-9.,;0\/!?ÁÉÍÓÚÜÑáéíóúüñ¿¡\-\' ]*$)', re.RegexFlag.S) # non matching pattern, if any character hits, the sentence is invalid
-# VALID_FROM_START_CHARS_PATTERN = re.compile(r'(^[a-zA-Z0-9!?ÁÉÍÓÚÜÑáéíóúüñ¿¡])') # if the sentence does not begin with one of these characters, the sentence is invalid and dropped from training
+VALID_FROM_CHARS_PATTERN = re.compile(r'(?:^[a-zA-Z0-9.,;0\/!?ÃÁÉÍÓÚÜÑãáéíóúüñ¿¡\-\' ]*$)', re.RegexFlag.S) # non matching pattern, if any character hits, the sentence is invalid
+VALID_FROM_START_CHARS_PATTERN = re.compile(r'(^[a-zA-Z0-9!?ÃÁÉÍÓÚÜÑãáéíóúüñ¿¡])') # if the sentence does not begin with one of these characters, the sentence is invalid and dropped from training
 
 # 5 TO LANGUAGE SPECIFIC PATTERN VARIABLES
 # TO LANGUAGE
@@ -144,6 +144,7 @@ ENABLE_RULE_FROM_LANGUAGE_VALIDATION = True
 ENABLE_RULE_TO_LANGUAGE_VALIDATION = True
 
 def LogLine(input:str):
+    input = input + "\n"
     with open(file=LOG_OUTPUT_FILE, mode="a", encoding="utf-8") as f:
         f.write(input)
 
@@ -185,11 +186,11 @@ def cleanse_malformed_punctuation(input:str):
     punct = {".", "?", "!"}
     
     if malformed_punctuation:
-        LogLine(f"invalid_punctuation\t{input}\n")
+        LogLine(f"invalid_punctuation\t{input}")
         input = ""        
 
     if len(input) > 0 and input[-1] not in punct:
-        LogLine(f"no_punctuation\t{input}\n")
+        LogLine(f"no_punctuation\t{input}")
         input = ""        
 
     return input
@@ -227,7 +228,7 @@ def cleanse_language_start(input:str, pattern: Pattern[str]):
 
     # if the sentence does not start with valid chars, eject it from training set
     if not re.match(pattern, input):
-        LogLine(f"invalid_start_chars_pattern\t{input}\n")
+        LogLine(f"invalid_start_chars_pattern\t{input}")
         return ""
         
     return input
@@ -240,7 +241,7 @@ def cleanse_language_invalid_characters(input:str, pattern: Pattern[str]):
     
     # if we do not match, then drop the sentence
     if not re.match(pattern, input):
-        LogLine(f"invalid_chars_pattern\t{input}\n")
+        LogLine(f"invalid_chars_pattern\t{input}")
         return ""
     
     return input
@@ -269,11 +270,11 @@ def cleanse_align_starts(from_lang: str, to_lang:str):
         return from_lang, to_lang
 
     if from_lang_start.isnumeric() and not to_lang_start.isnumeric():
-        LogLine(f"mismatched start characters failed numeric check\t FROM:{from_lang} - TO:{to_lang}\n")
+        LogLine(f"mismatched start characters failed numeric check\t FROM:{from_lang} - TO:{to_lang}")
         return "", ""
 
     if not from_lang_start.isnumeric() and to_lang_start.isnumeric():
-        LogLine(f"mismatched start characters failed numeric check\t FROM:{from_lang} - TO:{to_lang}\n")
+        LogLine(f"mismatched start characters failed numeric check\t FROM:{from_lang} - TO:{to_lang}")
         return "", ""
 
     # both sentences have matching lower case start
@@ -284,7 +285,7 @@ def cleanse_align_starts(from_lang: str, to_lang:str):
     if from_lang_start.islower() == False and to_lang_start.islower() == False:
         return from_lang, to_lang
         
-    LogLine(f"mismatched start characters\t FROM:{from_lang} - TO:{to_lang}\n")
+    LogLine(f"mismatched start characters\t FROM:{from_lang} - TO:{to_lang}")
     return "", ""
     
 def clean_line(line: str) -> str:
@@ -363,7 +364,7 @@ def clean_line(line: str) -> str:
                 text = text.lower()
 
         return text
-    LogLine(f"unable to split by delimiter\t\n")
+    LogLine(f"unable to split by delimiter")
     return "" # drop rule hit invalid delimiter split
 
 def clean_dataset(file: str) -> str:
@@ -392,7 +393,7 @@ def clean_dataset(file: str) -> str:
                     new_lower_compressed_lines.append(lower)
                     new_lines.append(new_line)
                 else:
-                    LogLine(f"dropped duplicate\t{new_line}\n")
+                    LogLine(f"dropped duplicate\t{new_line}")
         else:
             new_line = clean_line(line)
             new_lines.append(new_line)

@@ -12,12 +12,12 @@ from pathlib import Path
 
 # 1 LANGUAGE VARIABLES
 # DANISH
-INPUT_FILE = "example_data/tatoeba/danish/combined/DA_EN.txt"
-OUTPUT_FILE = "example_data/tatoeba/danish/deduplicated/DA_EN.txt"
+# INPUT_FILE = "example_data/tatoeba/danish/combined/DA_EN.txt"
+# OUTPUT_FILE = "example_data/tatoeba/danish/deduplicated/DA_EN.txt"
 
 # SPANISH
-# INPUT_FILE = "example_data/tatoeba/spanish/combined/ES_EN.txt"
-# OUTPUT_FILE = "example_data/tatoeba/spanish/deduplicated/ES_EN.txt"
+INPUT_FILE = "example_data/tatoeba/spanish/combined/ES_EN.txt"
+OUTPUT_FILE = "example_data/tatoeba/spanish/deduplicated/ES_EN.txt"
 
 def deduplicate_lines_reverse(lines: dict):
     '''DEDUPLICATES FILE BASED ON TO LANGUAGE AND SHORTEST LENGTH FROM LANGUAGE'''

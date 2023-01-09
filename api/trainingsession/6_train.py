@@ -12,7 +12,7 @@ import time
 # 4. NAME YOUR TRAINING SESSION
 # 5. CHOOSE A LANGUAGE FROM THE OPTIONS BELOW COMMENT OUT THE VARIABLES FOR THE LANGUAGES YOU WILL NOT NEED AND UNCOMMENT THE VARIABLES FOR LANGUAGE YOU INTEND TO TRAIN
 
-API_URL = "https://testrclapi.lumina247.io"
+API_URL = "https://rclapi.lumina247.io"
 
 # 1 example: bearer <token>
 API_TOKEN = "PASTE TOKEN HERE"
@@ -25,18 +25,18 @@ FILE_UPLOAD_CHUNK_SIZE = 50000000
 
 # 4
 # DANISH
-TRAINING_SESSION_NAME = "DANISH_TATOEBA_EXAMPLE"
+# TRAINING_SESSION_NAME = "DANISH_TATOEBA_EXAMPLE"
 
 # SPANISH
-# TRAINING_SESSION_NAME = "SPANISH_TATOEBA_EXAMPLE"
+TRAINING_SESSION_NAME = "SPANISH_TATOEBA_EXAMPLE"
 
 # 5
 # LANGUAGE VARIABLES
 # DANISH
-DATA_FOLDER = "example_data/tatoeba/danish/reversed"
+# DATA_FOLDER = "example_data/tatoeba/danish/reversed"
 
 # SPANISH
-# DATA_FOLDER = "example_data/tatoeba/spanish/reversed"
+DATA_FOLDER = "example_data/tatoeba/spanish/reversed"
 
 HEADERS = {
     "Content-type": "application/json",
@@ -227,7 +227,7 @@ def check_training_succeeded(session_key: int):
     except:
         raise Exception(f"Api Communication failure, unable to check training succeeded status, check network connection and try again.")
 
-def check_training_status(session_key: int):
+def check_training_last_status(session_key: int):
     '''checks all statuses for a training session and returns the latest status'''
     try:
         response = requests.get(f"{API_URL}/trainingsession/{session_key}",
@@ -268,16 +268,7 @@ def train_model(
 
         if response.status_code != 200:
             raise Exception(f"Training error occurred, response code is {response.status_code}")
-        
-        training_succeeded = False
-        training_failed = False
 
-        while(training_failed == False and training_succeeded == False):
-            training_failed = check_training_failed(session_key)
-            training_succeeded = check_training_succeeded(session_key)
-            training_status = check_training_status(session_key)
-            print("Training Session Status:", training_status)
-            time.sleep(60) 
     except:
         raise Exception(f"Api Communication failure, check network connection and try again.")
 
@@ -300,17 +291,32 @@ def translation_training_example():
 
     print("Upload Completed, Beginning Training")
 
-    training_successful = train_model(session_key, VECTOR_SIZE, translation_model=True)
+    train_model(session_key, VECTOR_SIZE, translation_model=True)
 
-    if training_successful == False:
+    return session_key
+
+
+
+def check_training_status(session_key: str):
+    training_succeeded = False
+    training_failed = False
+
+    while(training_failed == False and training_succeeded == False):
+        training_failed = check_training_failed(session_key)
+        training_succeeded = check_training_succeeded(session_key)
+        training_status = check_training_last_status(session_key)
+        print("Training Session Status:", training_status)
+        time.sleep(120)
+            
+    if training_succeeded == False:
         print("Training did not complete successfully")
         return
     
-    if training_successful == True:
+    if training_succeeded == True:
         print("Training completed successfully")
         return
 
-    print("Training ended")
-
 if __name__ == "__main__":
-    translation_training_example()
+    session_key = translation_training_example()    
+    check_training_status(session_key)
+    

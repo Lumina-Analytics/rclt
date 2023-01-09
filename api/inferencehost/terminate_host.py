@@ -10,7 +10,7 @@ import time
 # 1. API_TOKEN (retrieve from the support portal @ https://support.lumina247.com)
 # 2. SET SESSION_KEY this is the session_key for your trained model
 
-API_URL = "https://testrclapi.lumina247.io"
+API_URL = "https://rclapi.lumina247.io"
 
 API_TOKEN = "PASTE TOKEN HERE"
 

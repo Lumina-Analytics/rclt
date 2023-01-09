@@ -8,12 +8,12 @@ import os
 # SET OUTPUT_FILE_NAME = THE FILE LOCATION TO STORE THE COMBINED RESULTS
 
 # DANISH
-DATA_FOLDER = "example_data/tatoeba/danish/cleansed"
-OUTPUT_FILE_NAME = "example_data/tatoeba/danish/combined/DA_EN.txt"
+# DATA_FOLDER = "example_data/tatoeba/danish/cleansed"
+# OUTPUT_FILE_NAME = "example_data/tatoeba/danish/combined/DA_EN.txt"
 
 # SPANISH
-# DATA_FOLDER = "example_data/tatoeba/spanish/cleansed"
-# OUTPUT_FILE_NAME = "example_data/tatoeba/spanish/combined/ES_EN.txt"
+DATA_FOLDER = "example_data/tatoeba/spanish/cleansed"
+OUTPUT_FILE_NAME = "example_data/tatoeba/spanish/combined/ES_EN.txt"
 
 def combine_files():
     training_files = os.listdir(DATA_FOLDER)
