@@ -14,7 +14,7 @@ from pathlib import Path
 # 2. SET SESSION_KEY this is the session_key for your trained model
 # 3. SET TEST_DATA_SOURCE this is the path to your test data for inference
 
-API_URL = "https://testrclapi.lumina247.io"
+API_URL = "https://rclapi.lumina247.io"
 
 # 1 example: bearer <token>
 API_TOKEN = "PASTE TOKEN HERE"
@@ -24,10 +24,10 @@ SESSION_KEY = "PASTE SESSION KEY HERE"
 
 # 3 SET TEST DATA
 # Danish
-TEST_DATA_SOURCE = "example_data/tatoeba/danish/test_data/English_Danish_Test.txt"
+# TEST_DATA_SOURCE = "example_data/tatoeba/danish/test_data/English_Danish_Test.txt"
 
 # Spanish
-# TEST_DATA_SOURCE = "example_data/tatoeba/spanish/test_data/English_Spanish_Test.txt"
+TEST_DATA_SOURCE = "example_data/tatoeba/spanish/test_data/English_Spanish_Test.txt"
 
 HEADERS = {
     "Content-type": "application/json",

@@ -11,12 +11,12 @@ import os
 
 # 1 LANGUAGE VARIABLES
 # DANISH
-DATA_FOLDER = "example_data/tatoeba/danish/deduplicated"
-OUTPUT_FOLDER = "example_data/tatoeba/danish/reversed"
+# DATA_FOLDER = "example_data/tatoeba/danish/deduplicated"
+# OUTPUT_FOLDER = "example_data/tatoeba/danish/reversed"
 
 # SPANISH
-# DATA_FOLDER = "example_data/tatoeba/spanish/deduplicated"
-# OUTPUT_FOLDER = "example_data/tatoeba/spanish/reversed"
+DATA_FOLDER = "example_data/tatoeba/spanish/deduplicated"
+OUTPUT_FOLDER = "example_data/tatoeba/spanish/reversed"
 
 # 2 DELMITER
 DELIMITER = "\t"

@@ -16,7 +16,7 @@ from nltk.util import everygrams
 # 4. SET GLEU_ITERATION_COUNT this is the total number of iterations gleu score will be evaluated
 # 5. SET GLEU_EVALUATION_SAMPLE_SIZE this is the total sample size for each gleu iteration
 
-API_URL = "https://testrclapi.lumina247.io"
+API_URL = "https://rclapi.lumina247.io"
 
 # 1 example: bearer <token>
 API_TOKEN = "PASTE TOKEN HERE"
@@ -27,10 +27,10 @@ SESSION_KEY = "PASTE SESSION KEY HERE"
 # 3
 # SET TEST DATA PATH HERE
 # DANISH
-TEST_PATH = "example_data/tatoeba/danish/test_data/English_Danish_Test.txt"
+# TEST_PATH = "example_data/tatoeba/danish/test_data/English_Danish_Test.txt"
 
 # SPANISH
-# TEST_PATH = "example_data/tatoeba/spanish/test_data/English_Spanish_Test.txt"
+TEST_PATH = "example_data/tatoeba/spanish/test_data/English_Spanish_Test.txt"
 
 # 4 
 # SET GLEU EVALUATION ITERATION COUNT
