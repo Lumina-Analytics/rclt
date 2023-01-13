@@ -21,13 +21,13 @@ API_URL = "https://rclapi.lumina247.io"
 API_TOKEN = "PASTE TOKEN HERE"
 
 # 2 SET TRAINING SESSION KEY HERE
-SESSION_KEY = "000000001"
+SESSION_KEY = "127758762"
 
 REVISION_NUMBER = "1"
 
 # 3 SET TEST DATA
 # Danish
-TEST_DATA_SOURCE = "example_data/tatoeba/danish/test_data/test_data_Cleansed_r.txt"
+TEST_DATA_SOURCE = "example_data/tatoeba/danish/test_data/English_Danish_Test.txt"
 
 HEADERS = {
     "Content-type": "application/json",

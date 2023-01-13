@@ -23,14 +23,14 @@ API_URL = "https://rclapi.lumina247.io"
 API_TOKEN = "PASTE TOKEN HERE"
 
 # 2 SET TRAINING SESSION KEY HERE
-SESSION_KEY = "000000001"
+SESSION_KEY = "127758762"
 
 REVISION_NUMBER = "1"
 
 # 3
 # SET TEST DATA PATH HERE
 # DANISH
-TEST_PATH = "example_data/tatoeba/danish/test_data/test_data_Cleansed_r.txt"
+TEST_PATH = "example_data/tatoeba/danish/test_data/English_Danish_Test.txt"
 
 # 4 
 # SET GLEU EVALUATION ITERATION COUNT
@@ -38,7 +38,7 @@ GLEU_ITERATION_COUNT = 5
 
 # 5
 # SET GLEU EVALUATION SAMPLE SIZE
-GLEU_EVALUATION_SAMPLE_SIZE = 1000
+GLEU_EVALUATION_SAMPLE_SIZE = 10
 
 HEADERS = {
     "Content-type": "application/json",
